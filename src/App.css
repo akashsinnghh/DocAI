@@ -1,3 +1,21 @@
+.app-container {
+  background-image: url('./Assets/Gradient.png'); /* Replace with your image path */
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; /* Ensures full-page height */
+  color: #fff; /* Default text color */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
 .App {
   text-align: center;
 }
@@ -12,6 +30,19 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-image: url('./Assets/Gradient.png'); /* Replace with your image path */
+  background-size: cover;
+  background-attachment: fixed; /* Ensures the background remains static */
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff; /* Default text color */
+}
+
 
 .App-header {
   background-color: #282c34;
