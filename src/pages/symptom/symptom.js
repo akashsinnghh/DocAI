@@ -117,6 +117,17 @@ const SymptomChecker = () => {
 		} else {
 			alert('Thank you for completing the symptom checker. Your responses have been recorded.');
 		}
+
+		if(currentPage == 3){
+			let dataCollected = {
+				age,
+                gender,
+                selectedSymptoms,
+				otherSymptoms,
+                userData
+			}
+			console.log("dataCollected", dataCollected);
+		}
 	};
 
 	const previousPage = () => {
@@ -132,7 +143,7 @@ const SymptomChecker = () => {
 	  }, []);
 
 	return (
-		<div>
+		<div className='main'>
 			<div className="container">
 				<h1 className="heading">Symptom Checker</h1>
 				<p className="subheading">Let's help you understand your symptoms</p>

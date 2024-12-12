@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { HashLink } from 'react-router-hash-link'; // Import HashLink for smooth scrolling
 import './navbar.css';
 import logo from '../Assets/logo.png'; // Replace with your logo path
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
+  const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState('#home'); // Track the active link
 
   const handleLinkClick = (link) => {
@@ -35,7 +37,7 @@ function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
- 
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -46,7 +48,7 @@ function Navbar() {
           <ul className="navbar-links">
             <li>
               <Link
-                to="/"
+                to="/home#home"
                 className={activeLink === '#home' ? 'active' : ''}
                 onClick={handleHomeClick} // Call handleHomeClick on Home click
               >
@@ -65,7 +67,7 @@ function Navbar() {
             <li>
               {/* HashLink for smooth scroll to Benefits section */}
               <HashLink
-                to="/#benefits"
+                to="/home#benefits"
                 className={activeLink === '#benefits' ? 'active' : ''}
                 onClick={() => handleLinkClick('#benefits')}
               >
@@ -75,7 +77,7 @@ function Navbar() {
             <li>
               {/* HashLink for smooth scroll to FAQ section */}
               <HashLink
-                to="/#faqs"
+                to="/home#faqs"
                 className={activeLink === '#faqs' ? 'active' : ''}
                 onClick={() => handleLinkClick('#faqs')}
               >
@@ -85,7 +87,7 @@ function Navbar() {
             <li>
               {/* HashLink for smooth scroll to Contact Us section */}
               <HashLink
-                to="/#contact"
+                to="/home#contact"
                 className={activeLink === '#contact' ? 'active' : ''}
                 onClick={() => handleLinkClick('#contact')}
               >
@@ -97,8 +99,13 @@ function Navbar() {
       </div>
 
       <div className="navbar-buttons">
-        <button className="login-btn">Login</button>
-        <button className="signup-btn">Sign Up</button>
+        {/* <button className="login-btn">Login</button> */}
+        <button className="signup-btn" onClick={() => {
+          localStorage.removeItem('token');
+          sessionStorage.clear();
+
+          navigate('/', { replace: true });
+        }}>Log Out</button>
       </div>
     </nav>
   );

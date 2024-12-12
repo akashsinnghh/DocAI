@@ -2,12 +2,30 @@ import React from 'react';
 import '../css/symptomChecker.css';
 
 const SymptomPage3 = ({ selectedSymptoms, userData, setUserData }) => {
-    const handleInputChange = (e) => {
-        setUserData({
-            ...userData,
-            [e.target.name]: e.target.value
-        });
-    };
+    console.log("userData", userData);
+    
+    // const handleInputChange = (symptom, field, value) => {
+
+    //     setUserData((prevData) => ({
+    //         ...prevData,
+    //         [symptom]: {
+    //             ...prevData[symptom], // Preserve existing data for the symptom
+    //             [field]: value,      // Update the specific field
+    //         },
+
+    //     }));
+
+    const handleInputChange = (symptom, field, value) => {
+
+        setUserData((prevData) => ({
+            ...prevData,
+            [symptom]: {
+                ...prevData[symptom],
+                [field]: value,
+            },
+        }));
+
+    }
 
     const generateSymptomQuestions = () => {
         return Array.from(selectedSymptoms).map(symptom => (
@@ -18,7 +36,9 @@ const SymptomPage3 = ({ selectedSymptoms, userData, setUserData }) => {
                     className="form-control"
                     name="severity"
                     value={userData.severity}
-                    onChange={handleInputChange}
+                    onChange={(e) =>
+                        handleInputChange(symptom, 'severity', e.target.value)
+                    }
                 >
                     <option value="">Select Severity</option>
                     <option value="Mild">Mild</option>
@@ -30,7 +50,9 @@ const SymptomPage3 = ({ selectedSymptoms, userData, setUserData }) => {
                     className="form-control"
                     name="notes"
                     value={userData.notes}
-                    onChange={handleInputChange}
+                    onChange={(e) =>
+                        handleInputChange(symptom, 'notes', e.target.value)
+                    }
                     placeholder="Write any notes here..."
                 />
             </div>

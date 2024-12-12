@@ -1,4 +1,6 @@
 import React from 'react';
+import '../css/symptomChecker.css'
+
 
 const SymptomPage1 = ({ age, setAge, gender, setGender }) => (
     <div className="page active" id="symptomPage1">

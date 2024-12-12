@@ -2,23 +2,26 @@ import React from 'react';
 import '../css/symptomChecker.css'
 
 const SymptomPage2 = ({ selectedSymptoms, setSelectedSymptoms, otherSymptoms, setOtherSymptoms }) => {
-    console.log("entered page 2");
+    const Symptoms = ['Headache', 'Fever', 'Cough', 'Fatigue', 'Nausea', 'Body Ache']
     
     const toggleSymptom = (symptom) => {
-        const newSymptoms = new Set(selectedSymptoms);
+        
+        const newSymptoms = new Set(selectedSymptoms|| []);
         if (newSymptoms.has(symptom)) {
             newSymptoms.delete(symptom);
         } else {
             newSymptoms.add(symptom);
         }
         setSelectedSymptoms(newSymptoms);
+
     };
 
     return (
         <div id="page2">
             <h2 className="heading">Select Your Symptoms</h2>
             <div className="symptom-grid">
-                {['Headache', 'Fever', 'Cough', 'Fatigue', 'Nausea', 'Body Ache'].map((symptom) => (
+                {Symptoms.map((symptom) => {
+                    return (
                     <button
                         key={symptom}
                         className={`symptom-btn ${selectedSymptoms.has(symptom) ? 'selected' : ''}`}
@@ -26,7 +29,7 @@ const SymptomPage2 = ({ selectedSymptoms, setSelectedSymptoms, otherSymptoms, se
                     >
                         {symptom}
                     </button>
-                ))}
+                )})}
             </div>
             <div className="form-group">
                 <label>Other symptoms (if any)</label>
