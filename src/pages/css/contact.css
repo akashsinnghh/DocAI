@@ -17,13 +17,20 @@
     height: auto;
 }
 
+.contact-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
 .contact-details{
     text-align: left;
     justify-content: space-between;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    align-self: center;
+    /* align-items: center; */
+    /* align-self: center; */
 }
 
 h1.heading{

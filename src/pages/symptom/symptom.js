@@ -3,6 +3,9 @@ import '../css/symptomChecker.css'
 import SymptomPage1 from './symptomPage1';
 import SymptomPage2 from './SymptomPage2';
 import SymptomPage3 from './symptomPage3';
+import { OpenAi } from '../../services/open-ai';
+import DialogComponent from '../../components/dialogBox';
+import Loader from '../../components/loader';
 const SymptomChecker = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [selectedSymptoms, setSelectedSymptoms] = useState(new Set());
@@ -10,6 +13,17 @@ const SymptomChecker = () => {
 	const [gender, setGender] = useState('');
 	const [otherSymptoms, setOtherSymptoms] = useState('');
 	const [userData, setUserData] = useState({});
+	const [openDialog, setOpenDialog] = useState(false);
+	const [aiResponseMessage, setAiResponseMessage] = useState('');
+	const [loading, setLoading] = useState(false);  // Initialize loading as state
+
+
+	const handleOpenDialog = () => setOpenDialog(true);
+	const handleCloseDialog = () => setOpenDialog(false);
+	const handleConfirm = () => {
+		console.log("Confirmed");
+		setOpenDialog(false);
+	};
 
 	const updateProgress = () => {
 		return ((currentPage - 1) / 2) * 100;
@@ -106,7 +120,7 @@ const SymptomChecker = () => {
 		setCurrentPage(pageNum);
 	};
 
-	const nextPage = () => {
+	const nextPage = async () => {
 		if (!validatePage()) {
 			alert('Please fill in all required fields before proceeding.');
 			return;
@@ -114,20 +128,30 @@ const SymptomChecker = () => {
 
 		if (currentPage < 3) {
 			showPage(currentPage + 1);
-		} else {
-			alert('Thank you for completing the symptom checker. Your responses have been recorded.');
-		}
-
-		if(currentPage == 3){
+		} else if (currentPage == 3) {
+			setLoading(true)
 			let dataCollected = {
 				age,
-                gender,
-                selectedSymptoms,
+				gender,
+				selectedSymptoms,
 				otherSymptoms,
-                userData
+				userData
 			}
 			console.log("dataCollected", dataCollected);
+
+			try {
+				let response = await OpenAi(dataCollected);
+				console.log("response", response.data.chatResponse.choices[0]);
+				setAiResponseMessage(response.data.chatResponse.choices[0].message.content);
+			  } catch (error) {
+				console.error('Error fetching data:', error);
+			  }
+		  
+			setLoading(false)
+			handleOpenDialog();
 		}
+
+
 	};
 
 	const previousPage = () => {
@@ -136,11 +160,17 @@ const SymptomChecker = () => {
 		}
 	};
 
-	
+	const formatResponseMessage = (message) => {
+		return message
+		  .replace(/\n/g, '<br/>')  // Replace new lines with <br />
+		  .replace(/\* (.+?) \*/g, '<ul><li>$1</li></ul>'); // Convert bullet points
+	  };
+
+
 
 	React.useEffect(() => {
 		window.scrollTo(0, 0);  // Scrolls to top of the page
-	  }, []);
+	}, []);
 
 	return (
 		<div className='main'>
@@ -166,16 +196,16 @@ const SymptomChecker = () => {
 					{/* Page 2 - Select Symptoms */}
 					{currentPage === 2 ? <SymptomPage2
 						selectedSymptoms={selectedSymptoms}
-                            setSelectedSymptoms={setSelectedSymptoms}
-                            otherSymptoms={otherSymptoms}
-                            setOtherSymptoms={setOtherSymptoms}
-						/> : null}
+						setSelectedSymptoms={setSelectedSymptoms}
+						otherSymptoms={otherSymptoms}
+						setOtherSymptoms={setOtherSymptoms}
+					/> : null}
 
 					{/* Page 3 - Additional Information */}
 					{currentPage === 3 ? <SymptomPage3
-					selectedSymptoms={selectedSymptoms}
-					userData={userData}
-					setUserData={setUserData}
+						selectedSymptoms={selectedSymptoms}
+						userData={userData}
+						setUserData={setUserData}
 					/> : null}
 
 					<div className="nav-buttons">
@@ -190,6 +220,17 @@ const SymptomChecker = () => {
 					</div>
 				</div>
 			</div>
+			{openDialog && <DialogComponent
+				open={openDialog}
+				onClose={handleCloseDialog}
+				title="Doc Ai"
+				onConfirm={handleConfirm}
+				children={""}
+			>
+				<div dangerouslySetInnerHTML={{ __html: formatResponseMessage(aiResponseMessage) }} />
+			</DialogComponent>}
+			{console.log("Loading state:", loading)}
+			{loading && <Loader/>}
 		</div>
 	);
 };

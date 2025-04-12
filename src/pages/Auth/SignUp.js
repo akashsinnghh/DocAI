@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/auth.css';
 import InputField from '../../components/InputFeild';
 import { signUp } from '../../services/sign-up';
+import DialogComponent from '../../components/dialogBox';
+import Loader from '../../components/loader';
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(''); // Fixed typo in state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(''); // Error state to hold the password match error message
+  const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);  
+
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+  const handleConfirm = () => {
+    console.log("Confirmed");
+    setOpenDialog(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,8 +33,18 @@ const Signup = () => {
       setError("Passwords don't match!");
       return;
     } else {
-      let res = await signUp(name, phoneNumber, email, password)
-      console.log("res", res)
+      setLoading(true); // Show loading spinner
+      try {
+        let res = await signUp(name, phoneNumber, email, password)
+        setLoading(false);
+      handleOpenDialog();
+      setTimeout(() => {
+        navigate('/')
+      }, 1000);
+      } catch (error) {
+        console.log("error: " , error);
+        
+      }
     }
     setError(""); // Reset error if passwords match
   };
@@ -98,6 +121,16 @@ const Signup = () => {
           </Link>
         </p>
       </div>
+      {openDialog && <DialogComponent
+        open={openDialog}
+        onClose={handleCloseDialog}
+        title="Registration Successful"
+        onConfirm={handleConfirm}
+        children={""}
+      >
+        <p>Your account has been successfully created!</p>
+      </DialogComponent>}
+      {loading && <Loader/>}
     </div>
   );
 };

@@ -14,6 +14,9 @@ function Home() {
               DOC.<span className="highlight">AI</span>
             </div>
             <p className="subtitle">
+              The First-Aid AI for initial guidance.
+            </p>
+            <p className="subtitle">
               Your intelligent health companion, ready to assist you with personalised care and accurate insights, anytime and anywhere you need it.
             </p>
             <button className="get-started-btn">Get Started</button>
